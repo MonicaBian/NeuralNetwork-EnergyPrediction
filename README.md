@@ -23,7 +23,7 @@ This notebook:
 Below are sample outputs that demonstrate the value of dynamic neural network predictions. We are able to accurately predict the photovoltaic energy absorbed by inverters throughout the day with small variances. This is useful as sudden disruptions or unexpected anti-islanding will display a signficant outlier in the graph.
 
 ![Power vs GHI on 2023-12-03](https://github.com/MonicaBian/NeuralNetwork-EnergyPrediction/blob/main/Images/power_ghi_2023-12-07.png)
-
+![Power vs GHI on 2023-12-03](https://github.com/MonicaBian/NeuralNetwork-EnergyPrediction/blob/main/Images/power_voltage_2023-12-07.png)
 
 #  Quantitative Analysis 
 To support our results, we provide a quantitative view that measures the accuracy of our predictions against the known ground truth for the Decemeber dataset.

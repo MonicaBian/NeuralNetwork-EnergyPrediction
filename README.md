@@ -1,41 +1,92 @@
-#  Photovoltaic Energy Prediction using LSTM Neural Network Models
+#  Time-Series Modeling and Prediction of Photovoltaic Energy using Machine-Learning Models
 
-Neural networks play a crucial role in predicting photovoltaic (PV) energy data on solar inverters because of their ability to capture the complex, nonlinear relationships between weather conditions, solar irradiance, and system performance. 
+Neural networks play a crucial role in predicting photovoltaic (PV) energy data on solar inverters because of their ability to capture the complex, nonlinear relationships between weather conditions, solar irradiance, and system performance. Unlike traditional statistical methods, neural networks can learn from large volumes of historical inverter and meteorological data to provide highly accurate short- and long-term forecasts of energy generation.
 
-Unlike traditional statistical methods, neural networks can learn from large volumes of historical inverter and meteorological data to provide highly accurate short- and long-term forecasts of energy generation.
+These predictions are essential for optimizing inverter operations, ensuring grid stability, and minimizing energy curtailment during periods of high solar penetration. By accurately forecasting PV output, neural networks support better integration of renewable energy into the grid, enhance the reliability of solar power systems, and contribute to more efficient energy management and planning.
 
-These predictions are essential for optimizing inverter operations, ensuring grid stability, and minimizing energy curtailment during periods of high solar penetration. 
-
-By accurately forecasting PV output, neural networks support better integration of renewable energy into the grid, enhance the reliability of solar power systems, and contribute to more efficient energy management and planning.
-
+This project applies Large Language Models (LLMs) and Neural Network models, such as Long Short-Term Memory (LSTM), to predict and forecast solar generation time-series data for curtailment detection and quantification. The machine-learning models were trained using a set of input variables that capture both temporal and environmental conditions: surface global irradiance, direct normal irradiance, surface diffuse irradiance, cloud type, cloud optical depth, solar elevation, and solar azimuth.
 
 # Notebook Summary
 
 This notebook:
 1. Trains an LSTM model on **January–November 2023** photovoltaic data.
 2. Validates with the tail of that training window (chronological split).
-3. Generates Power predictions for **December 2023** and computes metrics.
+3. Generates power predictions for **December 2023** and computes metrics.
 4. Saves artifacts (model + scalers + config) and CSV outputs.
+5. Parses the CSV results, visualizes and plots the CSV outputs.
+
 
 
 # Visual Comparison
 
-Below are sample outputs that demonstrate the value of dynamic neural network predictions. We are able to accurately predict the photovoltaic energy absorbed by inverters throughout the day with small variances. This is useful as sudden disruptions or unexpected anti-islanding will display a signficant outlier in the graph.
+The examples below highlight the effectiveness of the dynamic neural network predictions. The model accurately forecasts solar generation throughout the day with minimal variance. This capability is valuable, as sudden disruptions or unexpected anti-islanding events appear as pronounced outliers in the plotted results.  
 
 ![Power vs GHI on 2023-12-03](https://github.com/MonicaBian/NeuralNetwork-EnergyPrediction/blob/main/Images/power_ghi_2023-12-07.png)
 ![Power vs GHI on 2023-12-03](https://github.com/MonicaBian/NeuralNetwork-EnergyPrediction/blob/main/Images/power_voltage_2023-12-07.png)
 
-#  Quantitative Analysis 
-To support our results, we provide a quantitative view that measures the accuracy of our predictions against the known ground truth for the Decemeber dataset.
+#  Qualitative and Quantitative Analysis
+To substantiate our findings, we present a quantitative evaluation of prediction accuracy against the ground-truth data for the December dataset.
 
-Errors are slightly higher during daylight (MAE_day ≈ 0.19 vs. MAE ≈ 0.14).
-This makes sense: at night, power is zero and trivial to predict, while daylight introduces variability from weather/clouds.
+Prediction errors are slightly higher during daylight hours (MAE_day ≈ 0.19 vs. MAE ≈ 0.14). This is expected: at night, power generation is zero and thus trivial to predict, whereas daylight introduces variability due to weather and cloud conditions.
 
-- MAE & MSE & RMSE are low → predictions are generally close in absolute terms.
-- WAPE ~18% → forecasts are moderately accurate; good but not best-in-class.
-- High R² (0.9+) → strong explanatory power, capturing most variability.
+Performance highlights:
 
-A summary of the December output:
+- Low **MAE, MSE, RMSE** → predictions are close to actual outputs.
+- **WAPE ≈ 18%** → good overall accuracy.
+- **R² > 0.9** → strong fit, capturing most of the variation in the data.
+
+
+___
+
+## **Mean Absolute Error (MAE)**
+- **Definition:** Average absolute difference between predicted and actual values.
+- <span style="color:green"> **Good prediction:** </span> Small MAE (close to 0) → on average, predictions deviate only slightly from actual power.
+- <span style="color:red"> **Bad prediction:** </span> Large MAE (no upper bound) → predictions consistently miss the target by a wide margin.
+- **Scale:** Interpreted in Watts
+
+
+## **Mean Squared Error (MSE)**
+- **Definition:** Average of squared differences between predicted and actual values. Penalizes larger errors more than smaller ones.
+- <span style="color:green"> **Good prediction:** </span> Low MSE → few large deviations.
+- <span style="color:red"> **Bad prediction:** </span> High MSE → presence of large outliers/errors.
+- **Scale:** In squared units (Watts²), so less intuitive than MAE.
+
+## **Root Mean Squared Error (RMSE)**
+
+- **Definition:** Square root of MSE; same unit as target variable.
+- <span style="color:green"> **Good prediction:** </span> Low RMSE → model tracks actual data well with few large errors.
+- <span style="color:red"> **Bad prediction:** </span> High RMSE → predictions have large swings away from truth.
+- **Interpretation:** RMSE ≥ MAE usually; if RMSE is much larger than MAE, it means some large outliers dominate error.
+
+
+
+## **Weighted Absolute Percentage Error (WAPE)**
+
+- **Definition:** Total absolute error divided by total actuals, expressed as a percentage.
+- <span style="color:green"> **Good prediction:** </span> WAPE close to 0%.
+Rule of thumb thresholds:
+    - <10% → very good
+    - 10–20% → acceptable
+    - 20–50% → weak but sometimes tolerable
+    - 50% or above → poor
+- <span style="color:red"> **Bad prediction:** </span> High WAPE suggests systematic deviation when compared to the magnitude of total production.
+
+
+## **R² (R-squared, Coefficient of Determination)**
+- **Definition:** Proportion of variance in the actual data explained by the predictions (0–1 scale, sometimes negative if worse than a baseline).
+- <span style="color:green"> **Good prediction:** </span> 
+    - R² close to 1.0 → model explains almost all variability in actual power.
+    - R² ≥ 0.9 → excellent; 
+    - R² = 0.7–0.9 → good.
+- <span style="color:red"> **Bad prediction:** </span> 
+    - R² close to 0 → model does not explain variability.
+    - Negative R² → model performs worse than simply predicting the mean of actuals.
+**Scale:** Dimensionless, bounded between (−∞, 1].
+
+
+___
+
+The December results are presented below:
 
 | Date       | MAE    | MSE    | RMSE   | WAPE % | R²    | N   | MAE (Day) | MSE (Day) | RMSE (Day) | WAPE Day % | R² Day | N Day |
 |------------|--------|--------|--------|--------|-------|-----|-----------|-----------|------------|-------------|--------|-------|

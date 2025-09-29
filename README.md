@@ -38,6 +38,8 @@ Performance highlights:
 
 ___
 
+# Description of the five statistical accuracy metrics applied to assess prediction performance.
+
 ## **Mean Absolute Error (MAE)**
 - **Definition:** Average absolute difference between predicted and actual values.
 - <span style="color:green"> **Good prediction:** </span> Small MAE (close to 0) → on average, predictions deviate only slightly from actual power.
